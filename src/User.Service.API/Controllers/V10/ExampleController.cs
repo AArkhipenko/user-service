@@ -6,7 +6,7 @@ using User.Service.Application.V10.Example.Queries;
 namespace User.Service.Api.Controllers.V10
 {
 	/// <summary>
-	/// Контроллер-пример
+	/// РљРѕРЅС‚СЂРѕР»Р»РµСЂ-РїСЂРёРјРµСЂ
 	/// </summary>
     [ApiController]
 	[ApiVersion("10", Deprecated = false)]
@@ -20,7 +20,7 @@ namespace User.Service.Api.Controllers.V10
 		/// </summary>
 		/// <param name="mediator"><see cref="IMediator"/></param>
 		/// <param name="logger"><see cref="ILogger"/></param>
-		/// <exception cref="ArgumentNullException">не задан входной параметр</exception>
+		/// <exception cref="ArgumentNullException">РЅРµ Р·Р°РґР°РЅ РІС…РѕРґРЅРѕР№ РїР°СЂР°РјРµС‚СЂ</exception>
 		public ExampleController(
 			IMediator mediator,
 			ILogger<ExampleController> logger): base(logger)
@@ -29,10 +29,10 @@ namespace User.Service.Api.Controllers.V10
 		}
 
 		/// <summary>
-		/// Тестовый метод получения данных
+		/// РўРµСЃС‚РѕРІС‹Р№ РјРµС‚РѕРґ РїРѕР»СѓС‡РµРЅРёСЏ РґР°РЅРЅС‹С…
 		/// </summary>
 		/// <param name="cancellationToken"><see cref="CancellationToken"/></param>
-		/// <returns>Список случайных чисел</returns>
+		/// <returns>РЎРїРёСЃРѕРє СЃР»СѓС‡Р°Р№РЅС‹С… С‡РёСЃРµР»</returns>
 		[HttpGet]
         public async Task<IEnumerable<int>> GetAsync(CancellationToken cancellationToken)
         {
