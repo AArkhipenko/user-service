@@ -31,7 +31,7 @@ namespace User.Service.API.Extensions
 			else
 			{
 				// Добавление провайдера логирования в файл
-				var filePath = "./output";
+				var filePath = "./output.log";
 				if(File.Exists(filePath))
 				{
 					File.Delete(filePath);
