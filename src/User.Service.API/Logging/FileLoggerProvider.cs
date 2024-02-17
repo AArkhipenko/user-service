@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Провайдер для <see cref="FileLogger"/>
 	/// </summary>
-	public class FileLoggerProvider : ILoggerProvider
+	internal class FileLoggerProvider : ILoggerProvider
 	{
 		private readonly string _filePath;
 
@@ -11,10 +11,17 @@
 		/// Initializes a new instance of the <see cref="FileLoggerProvider"/> class.
 		/// </summary>
 		/// <param name="filePath">путь к файлу для записи лога</param>
-		public FileLoggerProvider(string filePath) => this._filePath = filePath;
+		/// <param name="contextAccessor"><see cref="IHttpContextAccessor"/></param>
+		public FileLoggerProvider(string filePath)
+		{
+			this._filePath = filePath;
+		}
 
 		/// <inheritdoc/>
-		public ILogger CreateLogger(string categoryName) => new FileLogger(this._filePath);
+		public ILogger CreateLogger(string categoryName)
+		{
+			return new FileLogger(this._filePath);
+		}
 
 		/// <inheritdoc/>
 		public void Dispose() { }

@@ -1,4 +1,9 @@
-﻿using User.Service.API.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
+using User.Service.API.Logging;
 
 namespace User.Service.API.Extensions
 {
@@ -21,12 +26,18 @@ namespace User.Service.API.Extensions
 			if (!isDevelopment)
 			{
 				// Добавление провайдера логирования в консоль
-				builder.AddConsole();
+				builder.AddProvider(new JsonConsoleLoggerProvider());
 			}
 			else
 			{
 				// Добавление провайдера логирования в файл
-				builder.AddProvider(new FileLoggerProvider("./output"));
+				var filePath = "./output";
+				if(File.Exists(filePath))
+				{
+					File.Delete(filePath);
+				}
+
+				builder.AddProvider(new FileLoggerProvider(filePath));
 			}
 
 			return builder;

@@ -1,6 +1,8 @@
 using User.Service.API.Extensions;
 using User.Service.Application.V10;
 
+using DomainConsts = User.Service.Domain.Core.Consts;
+
 namespace User.Service.Api
 {
 	/// <summary>
@@ -24,12 +26,32 @@ namespace User.Service.Api
 			builder.Services.AddVersionExtension();
 			// Добавление работы со Swagger
 			builder.Services.AddSwaggerExtension();
+			// Добавление IHttpContextAccessor в DI
+			builder.Services.AddHttpContextAccessor();
+			// Добавление работы с логером
 			builder.Logging.AddLoggingExtension(builder.Environment.IsDevelopment());
 
 			var app = builder.Build();
 
+			app.Use(async (context, next) =>
+			{
+				// Добавление в заголовок запроса RequestId, если его нет
+				if (!context.Request.Headers.TryGetValue(DomainConsts.RequestIdKey, out var requestId))
+				{
+					context.Request.Headers.Add(DomainConsts.RequestIdKey, Guid.NewGuid().ToString());
+				}
+				// Замена заголовка запроса, если это не гуид
+				else if (!Guid.TryParse(requestId, out var requestId1))
+				{
+					context.Request.Headers.Remove(DomainConsts.RequestIdKey);
+					context.Request.Headers.Add(DomainConsts.RequestIdKey, Guid.NewGuid().ToString());
+				}
+
+				await next.Invoke();
+			});
+
 			// Использование Swagger
-			app.UseSwaggerExtension(app.Environment.IsDevelopment());
+			app.UseSwaggerExtension(builder.Environment.IsDevelopment());
 			// Configure the HTTP request pipeline
 			app.UseHttpsRedirection();
 			app.UseAuthorization();

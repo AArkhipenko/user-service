@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using User.Service.Application.V10.Example.Queries;
 using User.Service.Domain.Core.Logging;
@@ -14,14 +15,16 @@ namespace User.Service.Application.V10.Example.Hadlers
 		/// Initializes a new instance of the <see cref="GetRandomQueryHandler"/> class.
 		/// </summary>
 		/// <param name="logger"><see cref="ILogger"/></param>
+		/// <param name="contextAccessor"><see cref="IHttpContextAccessor"/></param>
 		public GetRandomQueryHandler(
-			ILogger<GetRandomQueryHandler> logger)
-			: base(logger) { }
+			ILogger<GetRandomQueryHandler> logger,
+			IHttpContextAccessor contextAccessor)
+			: base(logger, contextAccessor) { }
 
 		/// <inheritdoc/>
 		public Task<IEnumerable<int>> Handle(GetRandomQuery request, CancellationToken cancellationToken)
 		{
-			using (_ = BeginLoggingScope())
+			using (_ = base.BeginLoggingScope())
 			{
 				var result = Enumerable.Range(1, 5)
 					.Select(index => Random.Shared.Next(-20, 55))

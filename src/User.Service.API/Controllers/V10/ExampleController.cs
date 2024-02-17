@@ -20,10 +20,13 @@ namespace User.Service.Api.Controllers.V10
 		/// </summary>
 		/// <param name="mediator"><see cref="IMediator"/></param>
 		/// <param name="logger"><see cref="ILogger"/></param>
+		/// <param name="contextAccessor"><see cref="IHttpContextAccessor"/></param>
 		/// <exception cref="ArgumentNullException">не задан входной параметр</exception>
 		public ExampleController(
 			IMediator mediator,
-			ILogger<ExampleController> logger): base(logger)
+			ILogger<ExampleController> logger,
+			IHttpContextAccessor contextAccessor)
+			: base(logger, contextAccessor)
         {
 			_mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
 		}
@@ -36,7 +39,7 @@ namespace User.Service.Api.Controllers.V10
 		[HttpGet]
         public async Task<IEnumerable<int>> GetAsync(CancellationToken cancellationToken)
         {
-			using(_ = BeginLoggingScope())
+			using(_ = base.BeginLoggingScope())
 			{
 				var result = await this._mediator.Send(new GetRandomQuery(), cancellationToken);
 				return result;

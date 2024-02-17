@@ -16,9 +16,12 @@ namespace User.Service.Api.Controllers
 		/// Initializes a new instance of the <see cref="ApiBaseController"/> class.
 		/// </summary>
 		/// <param name="logger"><see cref="ILogger"/></param>
-		public ApiBaseController(ILogger logger)
+		/// <param name="contextAccessor"><see cref="IHttpContextAccessor"/></param>
+		public ApiBaseController(
+			ILogger logger,
+			IHttpContextAccessor contextAccessor)
         {
-            this._loggerWrapper = new LoggerWrapper(logger);
+            this._loggerWrapper = new LoggerWrapper(logger, contextAccessor);
         }
 
         /// <inheritdoc />
