@@ -6,7 +6,7 @@ namespace User.Service.API.Extensions
 	/// <summary>
 	/// Методы расширения для использования Swagger
 	/// </summary>
-	public static class SwaggerExtention
+	public static class SwaggerExtension
 	{
 		/// <summary>
 		/// Добавления настроек для работы с Swagger

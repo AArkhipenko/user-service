@@ -10,7 +10,7 @@ namespace User.Service.API.Extensions
 	/// <summary>
 	/// Методы расширешения для настройки логирования в приложении
 	/// </summary>
-	public static class LoggingExtention
+	public static class LoggingExtension
 	{
 		/// <summary>
 		/// Добавления настроект логирования
@@ -23,7 +23,7 @@ namespace User.Service.API.Extensions
 			// Удаление всех провайдеров
 			builder.ClearProviders();
 
-			if (!isDevelopment)
+			if (isDevelopment)
 			{
 				// Добавление провайдера логирования в консоль
 				builder.AddProvider(new JsonConsoleLoggerProvider());
