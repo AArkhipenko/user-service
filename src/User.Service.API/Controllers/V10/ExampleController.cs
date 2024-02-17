@@ -37,13 +37,28 @@ namespace User.Service.Api.Controllers.V10
 		/// <param name="cancellationToken"><see cref="CancellationToken"/></param>
 		/// <returns>Список случайных чисел</returns>
 		[HttpGet]
-        public async Task<IEnumerable<int>> GetAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<int>>> GetAsync(CancellationToken cancellationToken)
         {
 			using(_ = base.BeginLoggingScope())
 			{
 				var result = await this._mediator.Send(new GetRandomQuery(), cancellationToken);
-				return result;
+				return Ok(result);
 			}
-        }
-    }
+		}
+
+		/// <summary>
+		/// Тестовый метод получения данных
+		/// </summary>
+		/// <param name="cancellationToken"><see cref="CancellationToken"/></param>
+		/// <returns>Список случайных чисел</returns>
+		[HttpGet("exception")]
+		public async Task<IActionResult> GetExceptionAsync(CancellationToken cancellationToken)
+		{
+			using (_ = base.BeginLoggingScope())
+			{
+				_ = await this._mediator.Send(new GetExceptionQuery(), cancellationToken);
+				return Ok();
+			}
+		}
+	}
 }

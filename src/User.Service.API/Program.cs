@@ -50,6 +50,8 @@ namespace User.Service.Api
 				await next.Invoke();
 			});
 
+			// Использование прослойки обработки исключений
+			app.UseExceptionMiddleware();
 			// Использование Swagger
 			app.UseSwaggerExtension(builder.Environment.IsDevelopment());
 			// Configure the HTTP request pipeline
