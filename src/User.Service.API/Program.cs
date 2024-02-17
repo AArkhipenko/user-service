@@ -28,6 +28,8 @@ namespace User.Service.Api
 			builder.Services.AddSwaggerExtension();
 			// Добавление IHttpContextAccessor в DI
 			builder.Services.AddHttpContextAccessor();
+			// Добавление контроля работоспособности сервиса
+			builder.Services.AddHealthChecks();
 			// Добавление работы с логером
 			builder.Logging.AddLoggingExtension(builder.Environment.IsDevelopment());
 
@@ -57,6 +59,7 @@ namespace User.Service.Api
 			// Configure the HTTP request pipeline
 			app.UseHttpsRedirection();
 			app.UseAuthorization();
+			app.UseHealthChecks("/ping");
 			app.MapControllers();
 
 			app.Run();
