@@ -3,7 +3,7 @@ using User.Service.Application.V10;
 
 using DomainConsts = User.Service.Domain.Core.Consts;
 
-namespace User.Service.Api
+namespace User.Service.API
 {
 	/// <summary>
 	/// Входная точка запуска софта. Содержит основные настройки

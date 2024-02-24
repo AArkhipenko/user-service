@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
 using User.Service.Domain.Core.Logging;
 
-namespace User.Service.Api.Controllers
+namespace User.Service.API.Controllers
 {
 	/// <summary>
 	/// Базовый контроллер для всех контроллеров

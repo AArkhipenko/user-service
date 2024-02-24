@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using User.Service.Application.V10.Example.Queries;
 
-namespace User.Service.Api.Controllers.V10
+namespace User.Service.API.Controllers.V10
 {
 	/// <summary>
 	/// Контроллер-пример
