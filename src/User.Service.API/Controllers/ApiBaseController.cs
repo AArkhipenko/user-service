@@ -8,7 +8,7 @@ namespace User.Service.Api.Controllers
 	/// Базовый контроллер для всех контроллеров
 	/// Реализует <see cref="ILoggerWrapper"/>
 	/// </summary>
-	public class ApiBaseController : ControllerBase, ILoggerWrapper
+	public abstract class ApiBaseController : ControllerBase, ILoggerWrapper
     {
         private readonly LoggerWrapper _loggerWrapper;
 

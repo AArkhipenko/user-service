@@ -30,6 +30,9 @@ namespace User.Service.Api
 			builder.Services.AddHttpContextAccessor();
 			// Добавление контроля работоспособности сервиса
 			builder.Services.AddHealthChecks();
+			// Добавление возможности работы с JWT
+			builder.Services.AddAuthJwt();
+
 			// Добавление работы с логером
 			builder.Logging.AddLoggingExtension(builder.Environment.IsDevelopment());
 
@@ -58,7 +61,9 @@ namespace User.Service.Api
 			app.UseSwaggerExtension(builder.Environment.IsDevelopment());
 			// Configure the HTTP request pipeline
 			app.UseHttpsRedirection();
+			app.UseAuthentication();
 			app.UseAuthorization();
+			// АПИ контроля жизнеспособности приложения
 			app.UseHealthChecks("/ping");
 			app.MapControllers();
 

@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 
 namespace User.Service.API.Extensions
@@ -22,6 +23,29 @@ namespace User.Service.API.Extensions
 				{
 					Version = "v10",
 					Title = $"User.Service API v1.0",
+				});
+				options.AddSecurityDefinition("BearerAuth", new OpenApiSecurityScheme()
+				{
+					Name = "Authorization",
+					Type = SecuritySchemeType.Http,
+					Scheme = JwtBearerDefaults.AuthenticationScheme,
+					BearerFormat = "JWT",
+					In = ParameterLocation.Header,
+					Description = "JWT Authorization header \"Authorization: Bearer {token}\"",
+				});
+				options.AddSecurityRequirement(new OpenApiSecurityRequirement
+				{
+					{
+						new OpenApiSecurityScheme
+						{
+							Reference = new OpenApiReference
+							{
+								Type = ReferenceType.SecurityScheme,
+								Id = "BearerAuth"
+							}
+						},
+						new string[] {}
+					}
 				});
 			});
 
