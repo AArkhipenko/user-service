@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Xunit.Abstractions;
 using Controller = User.Service.API.Controllers.V10.ExampleController;
 
 namespace User.Service.API.Tests.Controllers.V10.ExampleController
@@ -6,17 +7,23 @@ namespace User.Service.API.Tests.Controllers.V10.ExampleController
 	/// <summary>
 	/// Тесты на метод <see cref="Controller.GetAsync(CancellationToken)"/>
 	/// </summary>
-    public class GetAsyncTests
-    {
+    public class GetAsyncTests : TestBase
+	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GetAsyncTests"/> class.
+		/// </summary>
+		/// <param name="testOutputHelper"><see cref="ITestOutputHelper"/></param>
+		public GetAsyncTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
+
 		/// <summary>
 		/// Корректное выполнение АПИ
 		/// </summary>
 		/// <returns>OK</returns>
 		[Fact]
-		public async Task It_returns_OK()
+		public async Task It_returns_not_empty_list()
 		{
 			// Настройки приложения
-			var testClient = TestBase.CreateClient(services => { });
+			var testClient = CreateClient(services => { });
 
 			// Выполнение запроса
 			var response = await testClient.GetAsync("/examples/v10");
