@@ -1,7 +1,13 @@
-﻿using Microsoft.AspNetCore.TestHost;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using User.Service.API.Settings;
 using Xunit.Abstractions;
 
 namespace User.Service.API.Tests
@@ -40,6 +46,65 @@ namespace User.Service.API.Tests
 				});
 			var client = server.CreateClient();
 			return client;
+		}
+
+		/// <summary>
+		/// Создание тестового http-клиента с обходом JWT для проверки АПИ 
+		/// </summary>
+		/// <param name="configureServices">метод настройки DI</param>
+		/// <returns><see cref="HttpClient"/></returns>
+		public static HttpClient CreateAuthClient(Action<IServiceCollection> configureServices)
+		{
+			var configuration = new ConfigurationBuilder()
+				.AddEnvironmentVariables()
+				.AddJsonFile("appsettings.Test.json")
+				.Build();
+
+			var jwtTokenSettings = configuration.GetSection("JwtTokenSettings").Get<JwtTokenSettings>();
+			if (jwtTokenSettings is null)
+			{
+				throw new Exception("Не найдена секция настройки JWT");
+			}
+
+			var server = new WebApplicationFactory<Program>()
+				.WithWebHostBuilder(builder =>
+				{
+
+					builder.UseConfiguration(configuration);
+					builder.ConfigureServices(configureServices);
+				});
+			var client = server.CreateClient();
+
+			var fakeJwtToken = GenerateFakeToken(jwtTokenSettings);
+			client.DefaultRequestHeaders.Add("Authorization", $"Bearer {fakeJwtToken}");
+			return client;
+		}
+
+		/// <summary>
+		/// Генерация не настоящего JWT-токена
+		/// </summary>
+		/// <param name="jwtTokenSettings"><inheritdoc cref="JwtTokenSettings" path="/summary"/></param>
+		/// <returns>JWT-токен</returns>
+		private static string GenerateFakeToken(JwtTokenSettings jwtTokenSettings)
+		{
+
+			var claims = new List<Claim>() {
+				new Claim(JwtRegisteredClaimNames.NameId, "FakeUserId"),
+				new Claim(JwtRegisteredClaimNames.UniqueName, "FakeUniqueUser"),
+			};
+
+			var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtTokenSettings.SecretKey));
+			var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+
+			var tokeOptions = new JwtSecurityToken(
+				issuer: jwtTokenSettings.Issuer,
+				audience: jwtTokenSettings.Audience,
+				claims: claims,
+				expires: DateTime.UtcNow.AddHours(24),
+				signingCredentials: signinCredentials
+			);
+
+			return new JwtSecurityTokenHandler().WriteToken(tokeOptions);
 		}
 	}
 }

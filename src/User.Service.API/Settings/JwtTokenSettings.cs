@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Найстройки для конфигурирования JWT
 	/// </summary>
-	internal class JwtTokenSettings
+	public class JwtTokenSettings
 	{
 		/// <summary>
 		/// Секретный ключ
