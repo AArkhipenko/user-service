@@ -1,4 +1,5 @@
 using User.Service.API.Extensions;
+using User.Service.API.Settings;
 using User.Service.Application.V10;
 
 using DomainConsts = User.Service.Domain.Core.Consts;
@@ -31,7 +32,7 @@ namespace User.Service.API
 			// Добавление контроля работоспособности сервиса
 			builder.Services.AddHealthChecks();
 			// Добавление возможности работы с JWT
-			builder.Services.AddAuthJwt();
+			builder.Services.AddAuthJwt(builder.Configuration);
 
 			// Добавление работы с логером
 			builder.Logging.AddLoggingExtension(builder.Environment.IsDevelopment());
