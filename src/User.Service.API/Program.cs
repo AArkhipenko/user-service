@@ -28,7 +28,8 @@ namespace User.Service.API
 			builder.Services.AddAuthJwt(builder.Configuration);
 			builder.Services.AddEFInfrastructure(builder.Configuration);
 
-			builder.Logging.AddLoggingExtension(builder.Environment.IsDevelopment());
+			var serviceProvider = builder.Services.BuildServiceProvider();
+			builder.Logging.AddLoggingExtension(serviceProvider, builder.Environment.IsDevelopment());
 
 			var app = builder.Build();
 
@@ -55,6 +56,7 @@ namespace User.Service.API
 			app.UseAuthentication();
 			app.UseAuthorization();
 			app.UseHealthChecks("/ping");
+
 			app.MapControllers();
 
 			app.Run();

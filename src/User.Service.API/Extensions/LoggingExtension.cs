@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
@@ -18,15 +19,17 @@ namespace User.Service.API.Extensions
 		/// <param name="builder"><see cref="ILoggingBuilder"/></param>
 		/// <param name="isDevelopment">признак режима разработки</param>
 		/// <returns><see cref="ILoggingBuilder"/></returns>
-		public static ILoggingBuilder AddLoggingExtension(this ILoggingBuilder builder, bool isDevelopment)
+		public static ILoggingBuilder AddLoggingExtension(this ILoggingBuilder builder, IServiceProvider serviceProvider, bool isDevelopment)
 		{
+			var accessor = serviceProvider.GetService<IHttpContextAccessor>();
+
 			// Удаление всех провайдеров
 			builder.ClearProviders();
 
 			if (isDevelopment)
 			{
 				// Добавление провайдера логирования в консоль
-				builder.AddProvider(new JsonConsoleLoggerProvider());
+				builder.AddProvider(new JsonConsoleLoggerProvider(accessor));
 			}
 			else
 			{
@@ -37,7 +40,7 @@ namespace User.Service.API.Extensions
 					File.Delete(filePath);
 				}
 
-				builder.AddProvider(new FileLoggerProvider(filePath));
+				builder.AddProvider(new FileLoggerProvider(filePath, accessor));
 			}
 
 			return builder;

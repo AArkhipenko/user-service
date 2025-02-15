@@ -5,15 +5,22 @@
 	/// </summary>
 	internal class JsonConsoleLoggerProvider : ILoggerProvider
 	{
+		private readonly IHttpContextAccessor _contextAccessor;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="JsonConsoleLoggerProvider"/> class.
 		/// </summary>
-		public JsonConsoleLoggerProvider(): base() { }
+		/// <param name="contextAccessor"><see cref="IHttpContextAccessor"/></param>
+		public JsonConsoleLoggerProvider(IHttpContextAccessor contextAccessor)
+			: base()
+		{
+			this._contextAccessor = contextAccessor ?? throw new ArgumentNullException(nameof(contextAccessor));
+		}
 
 		/// <inheritdoc/>
 		public ILogger CreateLogger(string categoryName)
 		{
-			return new JsonConsoleLogger();
+			return new JsonConsoleLogger(this._contextAccessor);
 		}
 
 		/// <inheritdoc/>
