@@ -25,14 +25,11 @@ namespace User.Service.API.Controllers.V10
 		/// <param name="userHelper"><see cref="IUserHelper"/></param>
 		/// <param name="mediator"><see cref="IMediator"/></param>
 		/// <param name="logger"><see cref="ILogger"/></param>
-		/// <param name="contextAccessor"><see cref="IHttpContextAccessor"/></param>
-		/// <exception cref="ArgumentNullException">не задан входной параметр</exception>
 		public UserController(
 			IUserHelper userHelper,
 			IMediator mediator,
-			ILogger<UserController> logger,
-			IHttpContextAccessor contextAccessor)
-			: base(logger, contextAccessor)
+			ILogger<UserController> logger)
+			: base(logger)
 		{
 			this._userHelper = userHelper ?? throw new ArgumentNullException(nameof(userHelper));
 			this._mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
