@@ -1,6 +1,7 @@
 ﻿using MediatR.NotificationPublishers;
 using Newtonsoft.Json;
 using System;
+using User.Service.Domain.Core;
 using User.Service.Domain.Core.Logging;
 
 namespace User.Service.API.Logging
@@ -12,14 +13,19 @@ namespace User.Service.API.Logging
 	{
 		private ScopeModel? _scopeModel = null;
 		private readonly Formatting _jsonFormatting;
+		private readonly IHttpContextAccessor _contextAccessor;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CustomLoggerBase"/> class.
 		/// </summary>
 		/// <param name="jsonFormatting"><see cref="Formatting"/></param>
-		public CustomLoggerBase(Formatting jsonFormatting)
+		/// <param name="contextAccessor"><see cref="IHttpContextAccessor"/></param>
+		public CustomLoggerBase(
+			Formatting jsonFormatting,
+			IHttpContextAccessor contextAccessor)
 		{
 			this._jsonFormatting = jsonFormatting;
+			this._contextAccessor = contextAccessor ?? throw new ArgumentNullException(nameof(contextAccessor));
 		}
 
 		/// <inheritdoc/>
@@ -55,11 +61,21 @@ namespace User.Service.API.Logging
 		/// <returns>строка json</returns>
 		protected string FormatMessage(LogLevel logLevel, string message, Exception? exception)
 		{
+			Guid? requestId = null;
+			var context = this._contextAccessor.HttpContext;
+			if (context is not null
+				&& context.Request.Headers.TryGetValue(Consts.RequestIdKey, out var requestIdStr))
+			{
+				if(Guid.TryParse(requestIdStr, out var parsedRequestId))
+				{
+					requestId = parsedRequestId;
+				}
+			}
 			var logEntry = new LogEntry
 			{
 				Timestamp = DateTime.UtcNow,
 				LogLevel = logLevel.ToString(),
-				RequestId = this._scopeModel is null ? Guid.Empty : this._scopeModel.RequestId,
+				RequestId = requestId ?? Guid.Empty,
 				Scope = this._scopeModel is null ? "unknown" : $"{this._scopeModel.ClassName}.{this._scopeModel.MethodName}",
 				Message = message,
 				Exception = exception?.ToString()

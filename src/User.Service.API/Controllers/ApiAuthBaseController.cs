@@ -17,11 +17,8 @@ namespace User.Service.API.Controllers
 		/// Initializes a new instance of the <see cref="ApiAuthBaseController"/> class.
 		/// </summary>
 		/// <param name="logger"><see cref="ILogger"/></param>
-		/// <param name="contextAccessor"><see cref="IHttpContextAccessor"/></param>
-		protected ApiAuthBaseController(
-			ILogger logger,
-			IHttpContextAccessor contextAccessor)
-			: base(logger, contextAccessor)
+		protected ApiAuthBaseController(ILogger logger)
+			: base(logger)
 		{
 		}
 	}

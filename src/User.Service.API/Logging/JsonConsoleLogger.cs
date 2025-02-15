@@ -14,7 +14,9 @@ namespace User.Service.API.Logging
 		/// <summary>
 		/// Initializes a new instance of the <see cref="JsonConsoleLogger"/> class.
 		/// </summary>
-		public JsonConsoleLogger(): base(Formatting.Indented) { }
+		/// <param name="accessor"><see cref="IHttpContextAccessor"/></param>
+		public JsonConsoleLogger(IHttpContextAccessor accessor)
+			: base(Formatting.Indented, accessor) { }
 
 		/// <inheritdoc/>
 		public override void Log<TState>(

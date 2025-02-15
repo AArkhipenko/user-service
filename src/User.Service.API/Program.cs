@@ -1,7 +1,7 @@
 using User.Service.API.Extensions;
 using User.Service.API.Settings;
 using User.Service.Application.V10;
-
+using User.Service.Infrastructure.EF;
 using DomainConsts = User.Service.Domain.Core.Consts;
 
 namespace User.Service.API
@@ -19,23 +19,17 @@ namespace User.Service.API
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
-			// Добавление поддержки Mediatr для проекта User.Service.Application.V10
 			builder.Services.AddMediatrV10Extension();
-			// Add services to the container
 			builder.Services.AddControllers();
-			// Добавление версионирования
 			builder.Services.AddVersionExtension();
-			// Добавление работы со Swagger
 			builder.Services.AddSwaggerExtension();
-			// Добавление IHttpContextAccessor в DI
 			builder.Services.AddHttpContextAccessor();
-			// Добавление контроля работоспособности сервиса
 			builder.Services.AddHealthChecks();
-			// Добавление возможности работы с JWT
 			builder.Services.AddAuthJwt(builder.Configuration);
+			builder.Services.AddEFInfrastructure(builder.Configuration);
 
-			// Добавление работы с логером
-			builder.Logging.AddLoggingExtension(builder.Environment.IsDevelopment());
+			var serviceProvider = builder.Services.BuildServiceProvider();
+			builder.Logging.AddLoggingExtension(serviceProvider, builder.Environment.IsDevelopment());
 
 			var app = builder.Build();
 
@@ -56,16 +50,13 @@ namespace User.Service.API
 				await next.Invoke();
 			});
 
-			// Использование прослойки обработки исключений
 			app.UseExceptionMiddleware();
-			// Использование Swagger
 			app.UseSwaggerExtension(builder.Environment.IsDevelopment());
-			// Configure the HTTP request pipeline
 			app.UseHttpsRedirection();
 			app.UseAuthentication();
 			app.UseAuthorization();
-			// АПИ контроля жизнеспособности приложения
 			app.UseHealthChecks("/ping");
+
 			app.MapControllers();
 
 			app.Run();

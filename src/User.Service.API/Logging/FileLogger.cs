@@ -14,8 +14,11 @@ namespace User.Service.API.Logging
 		/// Initializes a new instance of the <see cref="FileLogger"/> class.
 		/// </summary>
 		/// <param name="filePath">путь к файлу для записи лога</param>
-		public FileLogger(string filePath)
-			: base (Formatting.None)
+		/// <param name="contextAccess"><see cref="IHttpContextAccessor"/></param>
+		public FileLogger(
+			string filePath,
+			IHttpContextAccessor contextAccess)
+			: base (Formatting.None, contextAccess)
 		{
 			this._filePath = filePath;
 		}
