@@ -14,9 +14,4 @@
     <ProjectReference Include="..\..\Domain\User.Service.Domain.Interface\User.Service.Domain.Interface.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Configurations\" />
-    <Folder Include="Tables\" />
-  </ItemGroup>
-
 </Project>
