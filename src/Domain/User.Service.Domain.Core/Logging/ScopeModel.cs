@@ -12,11 +12,6 @@ namespace User.Service.Domain.Core.Logging
 	public class ScopeModel
 	{
 		/// <summary>
-		/// ID запроса (для отслеживания цепочки вызовов)
-		/// </summary>
-		public Guid RequestId { get; set; }
-
-		/// <summary>
 		/// Название класса, из которого был выполнен вызов
 		/// </summary>
 		public string ClassName { get; set; } = string.Empty;

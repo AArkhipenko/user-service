@@ -15,7 +15,6 @@ namespace User.Service.Domain.Core.Logging
     public class LoggerWrapper: ILoggerWrapper
 	{
 		private readonly ILogger _logger;
-		private readonly IHttpContextAccessor _contextAccessor;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="LoggerWrapper"/> class.
@@ -24,11 +23,9 @@ namespace User.Service.Domain.Core.Logging
 		/// <param name="contextAccessor"><see cref="IHttpContextAccessor"/></param>
 		/// <exception cref="ArgumentNullException">не задан входной параметр</exception>
 		public LoggerWrapper(
-			ILogger logger,
-			IHttpContextAccessor contextAccessor)
+			ILogger logger)
 		{
 			this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
-			this._contextAccessor = contextAccessor ?? throw new ArgumentNullException(nameof(contextAccessor));
 		}
 
 		/// <inheritdoc/>
@@ -37,10 +34,8 @@ namespace User.Service.Domain.Core.Logging
 		/// <inheritdoc/>
 		public LoggerWrapperScope BeginLoggingScope([CallerMemberName] string? callerMethodName = null, string? callerClassName = null)
 		{
-			var isSuccess = this._contextAccessor.HttpContext.Request.Headers.TryGetValue(Consts.RequestIdKey, out var requestId);
 			var scopeModel = new ScopeModel
 			{
-				RequestId = isSuccess ? Guid.Parse(requestId) : Guid.Empty,
 				ClassName = callerClassName ?? this.GetType().Name,
 				MethodName = callerMethodName ?? "unknown",
 			};
