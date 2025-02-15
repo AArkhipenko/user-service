@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace User.Service.Application.V10
 {
 	/// <summary>
-	/// Методы расширешения уроdня Application
+	/// Методы расширешения уровня Application
 	/// </summary>
 	public static class ApplicationExtension
 	{

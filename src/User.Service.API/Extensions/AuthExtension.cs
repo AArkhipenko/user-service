@@ -33,6 +33,7 @@ namespace User.Service.API.Extensions
 				.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 				.AddJwtBearer(options =>
 				{
+					options.MapInboundClaims = false;
 					options.Authority = keycloakSettings.Authority;
 					options.MetadataAddress = keycloakSettings.MetadataAddress;
 					options.RequireHttpsMetadata = keycloakSettings.IsRequireHttpsMetadata;
