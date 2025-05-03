@@ -1,8 +1,14 @@
-using User.Service.API.Extensions;
-using User.Service.API.Settings;
-using User.Service.Application.V10;
-using User.Service.Infrastructure.EF;
-using DomainConsts = User.Service.Domain.Core.Consts;
+using AArkhipenko.Core;
+using AArkhipenko.Logging;
+using AArkhipenko.Swagger.Models;
+using AArkhipenko.Swagger;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
+using User.Service.Application;
+using User.Service.Infrastructure;
+
+using DomainConsts = User.Service.Domain.Consts;
+using AArkhipenko.Keycloak.Security;
 
 namespace User.Service.API
 {
@@ -17,45 +23,57 @@ namespace User.Service.API
 		/// <param name="args">список аргументов при запуске приложения</param>
 		public static void Main(string[] args)
 		{
+			var versions = new[]
+			{
+				new OpenApiInfo
+				{
+					Version = "v10",
+					Title = "User.Service API v1.0"
+				}
+			};
+
 			var builder = WebApplication.CreateBuilder(args);
 
-			builder.Services.AddMediatrV10Extension();
 			builder.Services.AddControllers();
-			builder.Services.AddVersionExtension();
-			builder.Services.AddSwaggerExtension();
-			builder.Services.AddHttpContextAccessor();
-			builder.Services.AddHealthChecks();
-			builder.Services.AddAuthJwt(builder.Configuration);
-			builder.Services.AddEFInfrastructure(builder.Configuration);
 
-			var serviceProvider = builder.Services.BuildServiceProvider();
-			builder.Logging.AddLoggingExtension(serviceProvider, builder.Environment.IsDevelopment());
+			// Методы расширения из nuget-пакетов
+			// AArkhipenko.Core
+			builder.Services.AddCustomHealthCheck();
+			builder.Services.AddVersioning();
+			// AArkhipenko.Logging
+			if (builder.Environment.IsDevelopment())
+			{
+				builder.Logging.AddConsoleLogging();
+			}
+			else
+			{
+				builder.Logging.AddFileLogging();
+			}
+			// AArkhipenko.Swagger
+			builder.Services.AddCustomSwagger(versions, new[]
+			{
+				new SecurityModel(KeycloakSecurityScheme.DefaultKey, KeycloakSecurityScheme.Default)
+			});
+
+			// Методы расширения проектов
+			builder.Services.AddMediatrExtension();
+			builder.Services.AddEFInfrastructure(builder.Configuration);
 
 			var app = builder.Build();
 
-			app.Use(async (context, next) =>
-			{
-				// Добавление в заголовок запроса RequestId, если его нет
-				if (!context.Request.Headers.TryGetValue(DomainConsts.RequestIdKey, out var requestId))
-				{
-					context.Request.Headers.Add(DomainConsts.RequestIdKey, Guid.NewGuid().ToString());
-				}
-				// Замена заголовка запроса, если это не гуид
-				else if (!Guid.TryParse(requestId, out var requestId1))
-				{
-					context.Request.Headers.Remove(DomainConsts.RequestIdKey);
-					context.Request.Headers.Add(DomainConsts.RequestIdKey, Guid.NewGuid().ToString());
-				}
-
-				await next.Invoke();
-			});
-
+			// Методы расширения из nuget-пакетов
+			// AArkhipenko.Core
+			app.UseRequestChainMiddleware();
 			app.UseExceptionMiddleware();
-			app.UseSwaggerExtension(builder.Environment.IsDevelopment());
+			app.UseCustomHealthCheck();
+			// AArkhipenko.Logging
+			app.UseLoggingMiddleware();
+			// AArkhipenko.Swagger
+			app.UseCustomSwagger(versions);
+
 			app.UseHttpsRedirection();
 			app.UseAuthentication();
 			app.UseAuthorization();
-			app.UseHealthChecks("/ping");
 
 			app.MapControllers();
 

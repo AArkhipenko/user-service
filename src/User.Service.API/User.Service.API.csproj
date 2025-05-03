@@ -7,16 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="7.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.20" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.20" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+    <PackageReference Include="AArkhipenko.Logging" Version="7.0.0" />
+    <PackageReference Include="AArkhipenko.Swagger" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\User.Service.Application.V10\User.Service.Application.V10.csproj" />
-    <ProjectReference Include="..\Infrastructure\User.Service.Infrastructure.EF\User.Service.Infrastructure.EF.csproj" />
+    <ProjectReference Include="..\User.Service.Application\User.Service.Application.csproj" />
+    <ProjectReference Include="..\User.Service.Infrastructure\User.Service.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

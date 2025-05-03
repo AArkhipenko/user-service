@@ -2,9 +2,9 @@ using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using User.Service.Application.V10.User.DTO;
-using User.Service.Application.V10.User.Queries;
-using User.Service.Domain.Core.UserHelper;
+using User.Service.Application.User.DTO;
+using User.Service.Application.User.Queries;
+using User.Service.Domain.UserHelper;
 
 namespace User.Service.API.Controllers.V10
 {
