@@ -1,4 +1,5 @@
 using AArkhipenko.Core;
+using AArkhipenko.Logging;
 using User.Service.API.Extensions;
 using User.Service.API.Settings;
 using User.Service.Application;
@@ -24,36 +25,29 @@ namespace User.Service.API
 			builder.Services.AddControllers();
 
 			// Методы расширения из nuget-пакетов
+			// AArkhipenko.Core
 			builder.Services.AddCustomHealthCheck();
 			builder.Services.AddVersioning();
-
-			var serviceProvider = builder.Services.BuildServiceProvider();
-			builder.Logging.AddLoggingExtension(serviceProvider, builder.Environment.IsDevelopment());
+			// AArkhipenko.Logging
+			if (builder.Environment.IsDevelopment())
+			{
+				builder.Logging.AddConsoleLogging();
+			}
+			else
+			{
+				builder.Logging.AddFileLogging();
+			}
 
 			var app = builder.Build();
 
-			app.Use(async (context, next) =>
-			{
-				// Добавление в заголовок запроса RequestId, если его нет
-				if (!context.Request.Headers.TryGetValue(DomainConsts.RequestIdKey, out var requestId))
-				{
-					context.Request.Headers.Add(DomainConsts.RequestIdKey, Guid.NewGuid().ToString());
-				}
-				// Замена заголовка запроса, если это не гуид
-				else if (!Guid.TryParse(requestId, out var requestId1))
-				{
-					context.Request.Headers.Remove(DomainConsts.RequestIdKey);
-					context.Request.Headers.Add(DomainConsts.RequestIdKey, Guid.NewGuid().ToString());
-				}
-
-				await next.Invoke();
-			});
-
 
 			// Методы расширения из nuget-пакетов
+			// AArkhipenko.Core
 			app.UseRequestChainMiddleware();
 			app.UseExceptionMiddleware();
 			app.UseCustomHealthCheck();
+			// AArkhipenko.Logging
+			app.UseLoggingMiddleware();
 
 			app.UseSwaggerExtension(builder.Environment.IsDevelopment());
 			app.UseHttpsRedirection();
