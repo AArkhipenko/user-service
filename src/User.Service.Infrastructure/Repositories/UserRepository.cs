@@ -1,4 +1,4 @@
-﻿using User.Service.Domain.Exceptions;
+﻿using AArkhipenko.Core.Exceptions;
 using User.Service.Domain.Models;
 using User.Service.Domain.Repositories;
 

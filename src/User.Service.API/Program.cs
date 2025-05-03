@@ -1,3 +1,4 @@
+using AArkhipenko.Core;
 using User.Service.API.Extensions;
 using User.Service.API.Settings;
 using User.Service.Application;
@@ -21,12 +22,10 @@ namespace User.Service.API
 
 			builder.Services.AddMediatrV10Extension();
 			builder.Services.AddControllers();
-			builder.Services.AddVersionExtension();
-			builder.Services.AddSwaggerExtension();
-			builder.Services.AddHttpContextAccessor();
-			builder.Services.AddHealthChecks();
-			builder.Services.AddAuthJwt(builder.Configuration);
-			builder.Services.AddEFInfrastructure(builder.Configuration);
+
+			// Методы расширения из nuget-пакетов
+			builder.Services.AddCustomHealthCheck();
+			builder.Services.AddVersioning();
 
 			var serviceProvider = builder.Services.BuildServiceProvider();
 			builder.Logging.AddLoggingExtension(serviceProvider, builder.Environment.IsDevelopment());
@@ -50,12 +49,16 @@ namespace User.Service.API
 				await next.Invoke();
 			});
 
+
+			// Методы расширения из nuget-пакетов
+			app.UseRequestChainMiddleware();
 			app.UseExceptionMiddleware();
+			app.UseCustomHealthCheck();
+
 			app.UseSwaggerExtension(builder.Environment.IsDevelopment());
 			app.UseHttpsRedirection();
 			app.UseAuthentication();
 			app.UseAuthorization();
-			app.UseHealthChecks("/ping");
 
 			app.MapControllers();
 

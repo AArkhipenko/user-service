@@ -1,8 +1,8 @@
-﻿using MediatR.NotificationPublishers;
+﻿using AArkhipenko.Core.Models;
+using MediatR.NotificationPublishers;
 using Newtonsoft.Json;
 using System;
 using User.Service.Domain;
-using User.Service.Domain.Logging;
 
 namespace User.Service.API.Logging
 {
@@ -11,7 +11,7 @@ namespace User.Service.API.Logging
 	/// </summary>
 	internal abstract class CustomLoggerBase : ILogger, IDisposable
 	{
-		private ScopeModel? _scopeModel = null;
+		private MethodLogModel? _scopeModel = null;
 		private readonly Formatting _jsonFormatting;
 		private readonly IHttpContextAccessor _contextAccessor;
 
@@ -34,9 +34,9 @@ namespace User.Service.API.Logging
 		/// <inheritdoc/>
 		public IDisposable BeginScope<TState>(TState scopeModel)
 		{
-			if (scopeModel is not null && scopeModel is ScopeModel)
+			if (scopeModel is not null && scopeModel is MethodLogModel)
 			{
-				this._scopeModel = scopeModel as ScopeModel;
+				this._scopeModel = scopeModel as MethodLogModel;
 			}
 			return this;
 		}

@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AArkhipenko.Core.Logging;
+using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
-using User.Service.Domain.Logging;
 
 namespace User.Service.API.Controllers
 {

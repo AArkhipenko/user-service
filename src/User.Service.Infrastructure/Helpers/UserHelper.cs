@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AArkhipenko.Core.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using User.Service.Domain.Exceptions;
 using User.Service.Domain.UserHelper;
 
 namespace User.Service.Infrastructure.Helpers
