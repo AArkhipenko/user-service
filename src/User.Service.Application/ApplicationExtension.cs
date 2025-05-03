@@ -18,7 +18,7 @@ namespace User.Service.Application
 		/// </summary>
 		/// <param name="services"><see cref="IServiceCollection"/></param>
 		/// <returns><see cref="IServiceCollection"/></returns>
-		public static IServiceCollection AddMediatrV10Extension(this IServiceCollection services)
+		public static IServiceCollection AddMediatrExtension(this IServiceCollection services)
 		{
 			_ = services.AddMediatR(conf =>
 				conf.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));

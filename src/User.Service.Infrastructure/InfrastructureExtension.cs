@@ -5,6 +5,7 @@ using User.Service.Domain.UserHelper;
 using User.Service.Domain.Repositories;
 using User.Service.Infrastructure.Helpers;
 using User.Service.Infrastructure.Repositories;
+using AArkhipenko.Keycloak;
 
 namespace User.Service.Infrastructure
 {
@@ -20,13 +21,11 @@ namespace User.Service.Infrastructure
 		/// <param name="configs"><see cref="ConfigurationManager"/></param>
 		/// <returns><see cref="IServiceCollection"/></returns>
 		public static IServiceCollection AddEFInfrastructure(this IServiceCollection services, ConfigurationManager configs)
-		{
-			services.AddDbContext(configs);
-			services.AddHelpers();
-			services.AddRepositories();
-
-			return services;
-		}
+			=> services
+			.AddDbContext(configs)
+			.AddHelpers()
+			.AddRepositories()
+			.AddKeycloakAuth(configs);
 
 		/// <summary>
 		/// Добавление контекста БД
@@ -68,7 +67,7 @@ namespace User.Service.Infrastructure
 		/// <returns><see cref="IServiceCollection"/></returns>
 		private static IServiceCollection AddRepositories(this IServiceCollection services)
 		{
-			services.AddTransient<IUserRepository, UserRepository>();
+			services.AddScoped<IUserRepository, UserRepository>();
 
 			return services;
 		}

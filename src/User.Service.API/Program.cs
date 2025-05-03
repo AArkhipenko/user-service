@@ -1,9 +1,9 @@
 using AArkhipenko.Core;
 using AArkhipenko.Logging;
 using User.Service.API.Extensions;
-using User.Service.API.Settings;
 using User.Service.Application;
 using User.Service.Infrastructure;
+
 using DomainConsts = User.Service.Domain.Consts;
 
 namespace User.Service.API
@@ -21,7 +21,6 @@ namespace User.Service.API
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
-			builder.Services.AddMediatrV10Extension();
 			builder.Services.AddControllers();
 
 			// Методы расширения из nuget-пакетов
@@ -38,8 +37,11 @@ namespace User.Service.API
 				builder.Logging.AddFileLogging();
 			}
 
-			var app = builder.Build();
+			// Методы расширения проектов
+			builder.Services.AddMediatrExtension();
+			builder.Services.AddEFInfrastructure(builder.Configuration);
 
+			var app = builder.Build();
 
 			// Методы расширения из nuget-пакетов
 			// AArkhipenko.Core
