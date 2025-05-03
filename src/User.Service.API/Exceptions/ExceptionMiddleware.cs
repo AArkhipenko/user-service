@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Net;
-using User.Service.Domain.Core.Exceptions;
+using User.Service.Domain.Exceptions;
 
 namespace User.Service.API.Exceptions
 {

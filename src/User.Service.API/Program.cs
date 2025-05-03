@@ -1,8 +1,8 @@
 using User.Service.API.Extensions;
 using User.Service.API.Settings;
-using User.Service.Application.V10;
-using User.Service.Infrastructure.EF;
-using DomainConsts = User.Service.Domain.Core.Consts;
+using User.Service.Application;
+using User.Service.Infrastructure;
+using DomainConsts = User.Service.Domain.Consts;
 
 namespace User.Service.API
 {

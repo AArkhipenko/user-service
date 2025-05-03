@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Runtime.CompilerServices;
-using User.Service.Domain.Core.Logging;
+using User.Service.Domain.Logging;
 
 namespace User.Service.API.Controllers
 {

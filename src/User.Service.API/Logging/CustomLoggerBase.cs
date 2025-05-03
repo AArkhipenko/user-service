@@ -1,8 +1,8 @@
 ﻿using MediatR.NotificationPublishers;
 using Newtonsoft.Json;
 using System;
-using User.Service.Domain.Core;
-using User.Service.Domain.Core.Logging;
+using User.Service.Domain;
+using User.Service.Domain.Logging;
 
 namespace User.Service.API.Logging
 {
