@@ -1,10 +1,14 @@
 using AArkhipenko.Core;
 using AArkhipenko.Logging;
-using User.Service.API.Extensions;
+using AArkhipenko.Swagger.Models;
+using AArkhipenko.Swagger;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
 using User.Service.Application;
 using User.Service.Infrastructure;
 
 using DomainConsts = User.Service.Domain.Consts;
+using AArkhipenko.Keycloak.Security;
 
 namespace User.Service.API
 {
@@ -19,6 +23,15 @@ namespace User.Service.API
 		/// <param name="args">список аргументов при запуске приложения</param>
 		public static void Main(string[] args)
 		{
+			var versions = new[]
+			{
+				new OpenApiInfo
+				{
+					Version = "v10",
+					Title = "User.Service API v1.0"
+				}
+			};
+
 			var builder = WebApplication.CreateBuilder(args);
 
 			builder.Services.AddControllers();
@@ -36,6 +49,11 @@ namespace User.Service.API
 			{
 				builder.Logging.AddFileLogging();
 			}
+			// AArkhipenko.Swagger
+			builder.Services.AddCustomSwagger(versions, new[]
+			{
+				new SecurityModel(KeycloakSecurityScheme.DefaultKey, KeycloakSecurityScheme.Default)
+			});
 
 			// Методы расширения проектов
 			builder.Services.AddMediatrExtension();
@@ -50,8 +68,9 @@ namespace User.Service.API
 			app.UseCustomHealthCheck();
 			// AArkhipenko.Logging
 			app.UseLoggingMiddleware();
+			// AArkhipenko.Swagger
+			app.UseCustomSwagger(versions);
 
-			app.UseSwaggerExtension(builder.Environment.IsDevelopment());
 			app.UseHttpsRedirection();
 			app.UseAuthentication();
 			app.UseAuthorization();
