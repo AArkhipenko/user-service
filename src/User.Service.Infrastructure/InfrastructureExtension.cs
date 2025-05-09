@@ -1,75 +1,57 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using User.Service.Domain.UserHelper;
 using User.Service.Domain.Repositories;
-using User.Service.Infrastructure.Helpers;
 using User.Service.Infrastructure.Repositories;
 using AArkhipenko.Keycloak;
+using AArkhipenko.UserHelper;
 
 namespace User.Service.Infrastructure
 {
 	/// <summary>
-	/// Методы расширешения уровня Infrastructure для работы с БД через EFCore
+	/// Методы расширешения уровня Infrastructure
 	/// </summary>
 	public static class InfrastructureExtension
 	{
 		/// <summary>
-		/// Метод расширения DI в части EF
+		/// Добавление всех расширений с уровня Infrastructure
 		/// </summary>
 		/// <param name="services"><see cref="IServiceCollection"/></param>
-		/// <param name="configs"><see cref="ConfigurationManager"/></param>
+		/// <param name="configuration"><see cref="IConfiguration"/></param>
 		/// <returns><see cref="IServiceCollection"/></returns>
-		public static IServiceCollection AddEFInfrastructure(this IServiceCollection services, ConfigurationManager configs)
+		public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
 			=> services
-			.AddDbContext(configs)
-			.AddHelpers()
+			.AddDbContext(configuration)
 			.AddRepositories()
-			.AddKeycloakAuth(configs);
+			.AddKeycloakAuth(configuration)
+			.AddNpgsqlUserProvider();
 
 		/// <summary>
 		/// Добавление контекста БД
 		/// </summary>
 		/// <param name="services"><see cref="IServiceCollection"/></param>
 		/// <returns><see cref="IServiceCollection"/></returns>
-		private static IServiceCollection AddDbContext(this IServiceCollection services, ConfigurationManager configs)
+		private static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
 		{
-			var settings = configs.GetSection("DatabaseSettings").Get<DatabaseSettings>();
-			if (settings is null)
-			{
-				throw new ApplicationException("Не задана конфигурация для подключения к БД");
-			}
+			var connectionString = configuration.GetConnectionString(Consts.ConnectionString) ??
+				throw new ApplicationException($"Не задана строка подключения к БД с пользователями. " +
+					$"Раздел ConnectionStrings:{Consts.ConnectionString}.");
 
 			services.AddDbContext<PublicContext>((options) =>
 			{
-				options.UseNpgsql(settings.ConnectionString);
+				options.UseNpgsql(connectionString);
 			});
 
 			return services;
 		}
 
 		/// <summary>
-		/// Добавление реализации хелперов
-		/// </summary>
-		/// <param name="services"><see cref="IServiceCollection"/></param>
-		/// <returns><see cref="IServiceCollection"/></returns>
-		private static IServiceCollection AddHelpers(this IServiceCollection services)
-		{
-			services.AddScoped<IUserHelper, UserHelper>();
-
-			return services;
-		}
-
-		/// <summary>
-		/// Добавление реализации хелперов
+		/// Добавление репозиториев
 		/// </summary>
 		/// <param name="services"><see cref="IServiceCollection"/></param>
 		/// <returns><see cref="IServiceCollection"/></returns>
 		private static IServiceCollection AddRepositories(this IServiceCollection services)
-		{
-			services.AddScoped<IUserRepository, UserRepository>();
-
-			return services;
-		}
+			=> services
+			.AddScoped<IUserRepository, UserRepository>();
 	}
 }
