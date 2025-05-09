@@ -7,7 +7,6 @@ using Microsoft.OpenApi.Models;
 using User.Service.Application;
 using User.Service.Infrastructure;
 
-using DomainConsts = User.Service.Domain.Consts;
 using AArkhipenko.Keycloak.Security;
 
 namespace User.Service.API
@@ -17,25 +16,30 @@ namespace User.Service.API
 	/// </summary>
 	public class Program
 	{
+		private readonly static OpenApiInfo[] _versions = new[]
+		{
+			new OpenApiInfo
+			{
+				Version = "v10",
+				Title = "User.Service API v1.0"
+			}
+		};
+
 		/// <summary>
 		/// Входная точка приложения
 		/// </summary>
 		/// <param name="args">список аргументов при запуске приложения</param>
 		public static void Main(string[] args)
 		{
-			var versions = new[]
-			{
-				new OpenApiInfo
-				{
-					Version = "v10",
-					Title = "User.Service API v1.0"
-				}
-			};
+			var builder = WebApplication
+				.CreateBuilder(args);
 
-			var builder = WebApplication.CreateBuilder(args);
+#if DEBUG
+			builder.Configuration.AddYamlFile("DebugConfig.yml", false);
+#endif
 
 			builder.Services.AddControllers();
-
+			builder.Services.AddHttpContextAccessor();
 			// Методы расширения из nuget-пакетов
 			// AArkhipenko.Core
 			builder.Services.AddCustomHealthCheck();
@@ -50,14 +54,14 @@ namespace User.Service.API
 				builder.Logging.AddFileLogging();
 			}
 			// AArkhipenko.Swagger
-			builder.Services.AddCustomSwagger(versions, new[]
+			builder.Services.AddCustomSwagger(_versions, new[]
 			{
 				new SecurityModel(KeycloakSecurityScheme.DefaultKey, KeycloakSecurityScheme.Default)
 			});
 
 			// Методы расширения проектов
 			builder.Services.AddMediatrExtension();
-			builder.Services.AddEFInfrastructure(builder.Configuration);
+			builder.Services.AddInfrastructure(builder.Configuration);
 
 			var app = builder.Build();
 
@@ -69,7 +73,7 @@ namespace User.Service.API
 			// AArkhipenko.Logging
 			app.UseLoggingMiddleware();
 			// AArkhipenko.Swagger
-			app.UseCustomSwagger(versions);
+			app.UseCustomSwagger(_versions);
 
 			app.UseHttpsRedirection();
 			app.UseAuthentication();

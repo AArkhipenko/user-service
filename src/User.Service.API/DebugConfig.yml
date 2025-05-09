@@ -1,0 +1,23 @@
+﻿KeycloakSettings:
+    Authority: "http://server.arkhipenko.lan/keycloak/realms/aid-kit-realm"
+    MetadataAddress: "http://server.arkhipenko.lan/keycloak/realms/aid-kit-realm/.well-known/openid-configuration"
+    IsRequireHttpsMetadata: false
+    IsValidateIssuer: true
+    ValidIssuers:
+        - "http://server.arkhipenko.lan/keycloak/realms/aid-kit-realm"
+    IsValidateAudience: true
+    ValidAudiences:
+        - "user-service-client"
+    ServiceSettings:
+        Service: "user-service-client"
+        Roles:
+            - Key: "AdminRole"
+              Value: "user-service-admin"
+            - Key: "UserRole"
+              Value: "user-service-user"
+
+DatabaseSettings:
+    CommandTimeout: 30000
+
+ConnectionStrings:
+    UserDb: "Host=aid-kit.arkhipenko.lan;Port=60001;Database=aid_kit_db;Username=application_user;Password=application_user"
