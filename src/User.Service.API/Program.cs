@@ -2,12 +2,12 @@ using AArkhipenko.Core;
 using AArkhipenko.Logging;
 using AArkhipenko.Swagger.Models;
 using AArkhipenko.Swagger;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using User.Service.Application;
 using User.Service.Infrastructure;
-
 using AArkhipenko.Keycloak.Security;
+using Steeltoe.Extensions.Configuration.ConfigServer;
+using Steeltoe.Extensions.Configuration.Placeholder;
 
 namespace User.Service.API
 {
@@ -32,7 +32,10 @@ namespace User.Service.API
 		public static void Main(string[] args)
 		{
 			var builder = WebApplication
-				.CreateBuilder(args);
+				.CreateBuilder(args)
+				// Spring cloud config
+				.AddConfigServer()
+				.AddPlaceholderResolver();
 
 #if DEBUG
 			builder.Configuration.AddYamlFile("DebugConfig.yml", false);
