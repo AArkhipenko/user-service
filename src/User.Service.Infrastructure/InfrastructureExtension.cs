@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using User.Service.Domain.Repositories;
 using User.Service.Infrastructure.Repositories;
 using AArkhipenko.Keycloak;
-using AArkhipenko.UserHelper;
 
 namespace User.Service.Infrastructure
 {
@@ -19,25 +18,29 @@ namespace User.Service.Infrastructure
 		/// <param name="services"><see cref="IServiceCollection"/></param>
 		/// <param name="configuration"><see cref="IConfiguration"/></param>
 		/// <returns><see cref="IServiceCollection"/></returns>
-		public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+		public static IServiceCollection AddInfrastructure(
+			this IServiceCollection services,
+			IConfiguration configuration)
 			=> services
-			.AddDbContext(configuration)
-			.AddRepositories()
-			.AddKeycloakAuth(configuration)
-			.AddNpgsqlUserProvider();
+				.AddDbContext(configuration)
+				.AddRepositories()
+				.AddKeycloakAuth(configuration);
 
 		/// <summary>
 		/// Добавление контекста БД
 		/// </summary>
 		/// <param name="services"><see cref="IServiceCollection"/></param>
+		/// <param name="configuration"><see cref="IConfiguration"/></param>
 		/// <returns><see cref="IServiceCollection"/></returns>
-		private static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
+		private static IServiceCollection AddDbContext(
+			this IServiceCollection services,
+			IConfiguration configuration)
 		{
 			var connectionString = configuration.GetConnectionString(Consts.ConnectionString) ??
 				throw new ApplicationException($"Не задана строка подключения к БД с пользователями. " +
 					$"Раздел ConnectionStrings:{Consts.ConnectionString}.");
 
-			services.AddDbContext<PublicContext>((options) =>
+			services.AddDbContext<UserDbContext>((options) =>
 			{
 				options.UseNpgsql(connectionString);
 			});

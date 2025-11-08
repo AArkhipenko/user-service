@@ -8,10 +8,11 @@ namespace User.Service.Domain.Repositories
     public interface IUserRepository
     {
 		/// <summary>
-		/// Получение полной информации по пользователю
+		/// Получение информации о пользователе по ИД во внешней системе
 		/// </summary>
-		/// <param name="userId">ИД пользователя</param>
-		/// <returns><inheritdoc cref="FullUserModel" path="/summary"/></returns>
-		Task<FullUserModel> GetFullUserAsync(int userId);
+		/// <param name="externalId">ИД пользователя во внешней системе</param>
+		/// <param name="cancellationToken">Токен отмены</param>
+		/// <returns><inheritdoc cref="UserModel" path="/summary"/></returns>
+		Task<UserModel> GetUserByExternalIdAsync(string externalId, CancellationToken cancellationToken);
     }
 }

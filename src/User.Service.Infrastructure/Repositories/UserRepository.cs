@@ -1,4 +1,6 @@
 ﻿using AArkhipenko.Core.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using User.Service.Domain.Models;
 using User.Service.Domain.Repositories;
 
@@ -9,41 +11,41 @@ namespace User.Service.Infrastructure.Repositories
 	/// </summary>
 	internal class UserRepository : IUserRepository
 	{
-		private readonly PublicContext _context;
+		private readonly UserDbContext _context;
+		private readonly ILogger<UserRepository> _logger;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="UserRepository"/> class.
 		/// </summary>
-		/// <param name="context"><see cref="PublicContext"/></param>
-		public UserRepository(PublicContext context)
+		/// <param name="context"><see cref="UserDbContext"/></param>
+		/// <param name="logger"><see cref="ILogger"/></param>
+		public UserRepository(
+			UserDbContext context,
+			ILogger<UserRepository> logger)
 		{
 			this._context = context ?? throw new ArgumentNullException(nameof(context));
+			this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
 
 		/// <inheritdoc/>
-		public async Task<FullUserModel> GetFullUserAsync(int userId)
+		public async Task<UserModel> GetUserByExternalIdAsync(string externalId, CancellationToken cancellationToken)
 		{
-			var userDb = await this._context.Users.FindAsync(userId);
+			cancellationToken.ThrowIfCancellationRequested();
+			
+			var userDb = await this._context.Users
+				.Where(x => x.ExternalId == externalId)
+				.FirstOrDefaultAsync(cancellationToken);
 			if (userDb is null)
 			{
-				throw new NotFoundException($"Не найден пользователь с id={userId}");
+				var message = $"Не найден пользователь с id={externalId}";
+				this._logger.LogError(message);
+				throw new NotFoundException(message);
 			}
 
-			var personDb = await this._context.Persons.FindAsync(userId);
-			if (personDb is null)
-			{
-				throw new NotFoundException($"Не найдена персональная информация для пользователя с id={userId}");
-			}
-
-			return new FullUserModel(
+			return new UserModel(
 				userDb.Id,
-				userDb.UserTypeId,
-				personDb.FirstName,
-				personDb.SecondName,
-				personDb.LastName,
-				personDb.BirthDay,
-				personDb.Email,
-				personDb.Phone);
+				userDb.ExternalId,
+				userDb.UserTypeId);
 		}
 	}
 }
