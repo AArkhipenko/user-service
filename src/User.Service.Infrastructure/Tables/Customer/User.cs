@@ -1,4 +1,6 @@
-﻿namespace User.Service.Infrastructure.Tables
+﻿using User.Service.Infrastructure.Tables.Public;
+
+namespace User.Service.Infrastructure.Tables.Customer
 {
 	/// <summary>
 	/// Модель записи таблицы public.users

@@ -1,17 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using User.Service.Infrastructure.Tables.Public;
 
-using TableExt = User.Service.Infrastructure.Tables;
-
-namespace User.Service.Infrastructure.Configurations
+namespace User.Service.Infrastructure.Configurations.Public
 {
 	/// <summary>
 	/// Настройка отображения таблицы на модель
 	/// </summary>
-	internal class UserTypeConfiguration : IEntityTypeConfiguration<TableExt.UserType>
+	internal class UserTypeConfiguration : IEntityTypeConfiguration<UserType>
 	{
 		/// <inheritdoc/>
-		public void Configure(EntityTypeBuilder<TableExt.UserType> builder)
+		public void Configure(EntityTypeBuilder<UserType> builder)
 		{
 			builder.ToTable("user_types", "public")
 				.HasKey(k => k.Id);

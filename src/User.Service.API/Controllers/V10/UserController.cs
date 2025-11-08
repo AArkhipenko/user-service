@@ -1,4 +1,3 @@
-using AArkhipenko.UserHelper.Providers;
 using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +15,6 @@ namespace User.Service.API.Controllers.V10
 	[Route("users/v{version:apiVersion}")]
 	public class UserController : ApiAuthBaseController
 	{
-		private readonly IUserProvider _userProvider;
 		private readonly IMediator _mediator;
 
 		/// <summary>
@@ -26,31 +24,27 @@ namespace User.Service.API.Controllers.V10
 		/// <param name="mediator"><see cref="IMediator"/></param>
 		/// <param name="logger"><see cref="ILogger"/></param>
 		public UserController(
-			IUserProvider userProvider,
 			IMediator mediator,
 			ILogger<UserController> logger)
 			: base(logger)
 		{
-			this._userProvider = userProvider ??
-				throw new ArgumentNullException(nameof(userProvider));
-
-			this._mediator = mediator ??
-				throw new ArgumentNullException(nameof(mediator));
+			this._mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
 		}
 
 		/// <summary>
-		/// Получение информации о пользователе по информации из токена
+		/// Получение информации по пользователю из токена
 		/// </summary>
-		/// <param name="cancellationToken"><see cref="CancellationToken"/></param>
-		/// <returns><inheritdoc cref="FullUserDTO" path="/summary"/></returns>
-		[HttpPost("get-full-user")]
+		/// <param name="cancellationToken">токен отмены</param>
+		/// <returns><inheritdoc cref="TokenUserDto" path="/summary"/></returns>
+		[HttpPost("get-user-by-token")]
 		[Authorize("UserRole")]
-		public async Task<ActionResult<FullUserDTO>> GetFullUserAsync(CancellationToken cancellationToken)
+		public async Task<ActionResult<TokenUserDto>> GetUserByTokenAsync(CancellationToken cancellationToken)
 		{
 			using (_ = base.BeginLoggingScope())
 			{
-				var user = await this._userProvider.GetUserAsync(cancellationToken);
-				var result = await this._mediator.Send(new GetFullUserQuery(user.Id));
+				var result = await this._mediator.Send(
+					new GetUserByTokenQuery(),
+					cancellationToken);
 				return Ok(result);
 			}
 		}
