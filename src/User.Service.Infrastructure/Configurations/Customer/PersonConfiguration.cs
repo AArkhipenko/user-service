@@ -1,19 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using User.Service.Infrastructure.Tables.Customer;
 
-using TableExt = User.Service.Infrastructure.Tables;
-
-namespace User.Service.Infrastructure.Configurations
+namespace User.Service.Infrastructure.Configurations.Customer
 {
 	/// <summary>
 	/// Настройка отображения таблицы на модель
 	/// </summary>
-	internal class PersonConfiguration : IEntityTypeConfiguration<TableExt.Person>
+	internal class PersonConfiguration : IEntityTypeConfiguration<Person>
 	{
 		/// <inheritdoc/>
-		public void Configure(EntityTypeBuilder<TableExt.Person> builder)
+		public void Configure(EntityTypeBuilder<Person> builder)
 		{
-			builder.ToTable("persons", "public")
+			builder.ToTable("persons", "customer")
 				.HasKey(k => k.Id);
 
 			builder
@@ -24,7 +23,7 @@ namespace User.Service.Infrastructure.Configurations
 			builder
 				.HasOne(x => x.User)
 				.WithOne()
-				.HasForeignKey<TableExt.Person>(x => x.Id);
+				.HasForeignKey<Person>(x => x.Id);
 
 			builder
 				.Property<string?>(p => p.FirstName)

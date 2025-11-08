@@ -1,4 +1,4 @@
-﻿namespace User.Service.Infrastructure.Tables
+﻿namespace User.Service.Infrastructure.Tables.Public
 {
 	/// <summary>
 	/// Модель записи таблицы public.user_types

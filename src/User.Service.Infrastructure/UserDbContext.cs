@@ -1,5 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using User.Service.Infrastructure.Configurations;
+using User.Service.Infrastructure.Configurations.Customer;
+using User.Service.Infrastructure.Configurations.Public;
+using User.Service.Infrastructure.Tables.Customer;
+using User.Service.Infrastructure.Tables.Public;
 using TableExt = User.Service.Infrastructure.Tables;
 
 namespace User.Service.Infrastructure
@@ -7,13 +11,13 @@ namespace User.Service.Infrastructure
 	/// <summary>
 	/// Контекст БД для схемы public
 	/// </summary>
-    internal class PublicContext : DbContext
+    internal class UserDbContext : DbContext
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="PublicContext"/> class.
+		/// Initializes a new instance of the <see cref="UserDbContext"/> class.
 		/// </summary>
 		/// <param name="option"><see cref="DbContextOptions"/></param>
-		public PublicContext(DbContextOptions option)
+		public UserDbContext(DbContextOptions option)
 			: base (option)
 		{
 		}
@@ -21,17 +25,17 @@ namespace User.Service.Infrastructure
 		/// <summary>
 		/// Пользователи
 		/// </summary>
-		public DbSet<TableExt.User> Users { get; set; }
+		public DbSet<Tables.Customer.User> Users { get; set; }
 
 		/// <summary>
 		/// Типы пользователей
 		/// </summary>
-		public DbSet<TableExt.UserType> UserTypes { get; set; }
+		public DbSet<UserType> UserTypes { get; set; }
 
 		/// <summary>
 		/// Личности пользователей
 		/// </summary>
-		public DbSet<TableExt.Person> Persons { get; set; }
+		public DbSet<Person> Persons { get; set; }
 
 		/// <inheritdoc/>
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
