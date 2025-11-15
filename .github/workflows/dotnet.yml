@@ -10,23 +10,26 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  checkout:
     runs-on: ubuntu-24.04
-
     steps:
-    - uses: actions/checkout@v4
-    
+    - name: checkout
+      uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 7.0.x
-        
+  build:
+    runs-on: ubuntu-24.04
+    needs: [checkout]
+    steps:
     - name: Restore dependencies
       run: dotnet restore
-      
     - name: Build
       run: dotnet build --no-restore
-      
+  test:
+    runs-on: ubuntu-24.04
+    needs: [build]
+    steps:
     - name: Test
       run: dotnet test --no-build --verbosity normal
