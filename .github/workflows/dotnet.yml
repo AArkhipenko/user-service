@@ -34,7 +34,9 @@ jobs:
       run: dotnet test --configuration Release --no-build --verbosity normal
 
     - name: Publish
-      run: dotnet publish --configuration Release --no-build --output ./publish
+      run: |
+        dotnet publish --configuration Release --no-build /
+        --output ./publish --self-contained false
     
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
