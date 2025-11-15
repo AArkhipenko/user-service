@@ -35,7 +35,7 @@ jobs:
 
     - name: Publish
       run: |
-        dotnet publish --configuration Release --no-build /
+        dotnet publish --configuration Release --no-build \
         --output ./publish --self-contained false
     
     - name: Set up Docker Buildx
