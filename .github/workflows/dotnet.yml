@@ -1,6 +1,6 @@
 # Сборка (и публикация) проекта
 
-name: AArkhipenko/user-service build (and publish)
+name: Build (and publish)
 
 on:
   workflow_dispatch:
