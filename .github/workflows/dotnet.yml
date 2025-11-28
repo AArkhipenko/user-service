@@ -1,30 +1,28 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+# Сборка (и публикация) проекта
 
-name: .NET
+name: AArkhipenko/user-service build (and publish)
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
-      username:
-        description: 'A username passed from the caller workflow'
-        default: 'john-doe'
-        required: false
-        type: string
+      build_type:
+        description: 'Тип сборки'
+        required: true
+        default: 'build'
+        type: choice
+        options:
+        - build
+        - release
 
 jobs:
-  build:
-    name: Сборка проекта
-    runs-on: ubuntu-24.04
+  call-main-pipeline:
+    name: "🚀 Call Main Pipeline"
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Подготовка окружения
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 7.0.x
-    - name: Восстановление зависимостей
-      run: dotnet restore
-    - name: Сборка проекта
-      run: dotnet build --no-restore
-    - name: Запуск тестов
-      run: dotnet test --no-build --verbosity normal
+      - name: Call main build workflow
+        uses: AArkhipenko/pipelines/.github/workflows/dotnet@main
+        with:
+          dotnet_version: 7.0.x
+          build_type: ${{ github.event.inputs.build_type }}
+          branch_name: ${{ github.ref_name }}
+          repository_name: ${{ github.repository }}
