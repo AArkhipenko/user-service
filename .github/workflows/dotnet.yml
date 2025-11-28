@@ -15,14 +15,10 @@ on:
         - release
 
 jobs:
-  call-main-pipeline:
-    name: "🚀 Call Main Pipeline"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Call main build workflow
-        uses: AArkhipenko/pipelines/.github/workflows/dotnet@main
-        with:
-          dotnet_version: 7.0.x
-          build_type: ${{ github.event.inputs.build_type }}
-          branch_name: ${{ github.ref_name }}
-          repository_name: ${{ github.repository }}
+  build-and-publish:
+    uses: AArkhipenko/pipelines/.github/workflows/dotnet.yml@main
+    with:
+      dotnet_version: 7.0.x
+      build_type: ${{ github.event.inputs.build_type }}
+      branch_name: ${{ github.ref_name }}
+      repository_name: ${{ github.repository }}
