@@ -22,3 +22,4 @@ jobs:
       build_type: ${{ github.event.inputs.build_type }}
       branch_name: ${{ github.ref_name }}
       repository_name: ${{ github.repository }}
+    secrets: inherit
